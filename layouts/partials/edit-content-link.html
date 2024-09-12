@@ -1,0 +1,2 @@
+{{ $editURL := printf "/admin/#/collections/handbook/entries/%s%s" (.File.Dir | urlize) (.File.BaseFileName | urlize) }}
+<a href="{{ $editURL }}">Edit Content</a>
