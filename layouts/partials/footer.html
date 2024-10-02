@@ -32,6 +32,19 @@
       {{- if .Site.Params.footer.displayCopyright }}<div class="hx-mt-6 hx-text-xs">{{ $copyright | markdownify }}</div>{{ end }}
     </div>
   </div>
+  <script>
+    document.addEventListener('keydown', function(event) {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const editButton = document.getElementById('editButton');
+  
+      if ((isMac && event.metaKey && event.key === 'e') || (!isMac && event.ctrlKey && event.key === 'e')) {
+        event.preventDefault(); // Prevent any default behavior
+        if (editButton) {
+          editButton.click(); // Simulate click on the Edit button
+        }
+      }
+    });
+  </script>
 </footer>
 
 {{- define "theme-credit" -}}
