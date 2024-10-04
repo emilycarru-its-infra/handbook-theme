@@ -38,7 +38,7 @@
     <!-- Edit button positioned after the search bar -->
     {{- with .File }}
       {{- $editURL := printf "/admin/#/collections/handbook/entries/%s%s" (.Dir | urlize) (.BaseFileName | urlize) }}
-      <a href="{{ $editURL }}" id="editButton" class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative hx-p-2 hx-hidden md:hx-inline-block hx-flex hx-items-center" aria-label="Edit Document">
+      <a href="/admin/?redirect_to={{ $editURL }}" id="editButton" class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative hx-p-2 hx-hidden md:hx-inline-block hx-flex hx-items-center" aria-label="Edit Document">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
         </svg>
