@@ -10,8 +10,8 @@
             <p style="text-align: right; font-size: 0.8em;">Last modified on {{ .AuthorDate | dateFormat "Jan 2, 2006" }} by {{ .AuthorName }}</p>
           {{ else }}
             <p style="text-align: right; font-size: 0.8em;">
-              {{ with .Params.lastmod }}Last modified on {{ . | dateFormat "Jan 2, 2006" }}{{ end }}
-              {{ with .Params.last_modified_by }} by {{ . }}{{ end }}
+              {{ with .Params.lastmod_date }}Last modified on {{ . | dateFormat "Jan 2, 2006" }}{{ end }}
+              {{ with .Params.lastmod_by }} by {{ . }}{{ end }}
             </p>
           {{ end }}
           {{ .Content }}
