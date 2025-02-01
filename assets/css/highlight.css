@@ -1,6 +1,23 @@
 /* Code syntax highlight */
 @import "chroma/light.css";
-@import "chroma/dark.css";
+
+@media (prefers-color-scheme: dark) {
+  @import "chroma/dark.css";
+}
+
+/* Force light mode styles when system is in light mode */
+@media (prefers-color-scheme: light) {
+  :root, body {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  
+  /* Reset any .dark styles in case they persist */
+  .dark {
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+}
 
 .hextra-code-block {
   @apply hx-text-[.9em] hx-leading-5;
