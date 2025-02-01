@@ -35,16 +35,66 @@
       {{- end -}}
     {{- end -}}
 
-    <!-- Edit button positioned after the search bar -->
-    {{- with .File }}
-      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s%s" (.Dir | urlize) (.BaseFileName | urlize) }}
-      <a href="/admin/?redirect_to={{ $editURL }}" id="editButton" class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative hx-p-2 hx-hidden md:hx-inline-block hx-flex hx-items-center" aria-label="Edit Document">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-        </svg>
-        Edit
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const newButton = document.getElementById("newButton");
+    
+        if (newButton) {
+            newButton.addEventListener("click", (event) => {
+                event.preventDefault();
+    
+                // Get the current folder path from the URL
+                const pathSegments = window.location.pathname.split("/").filter(Boolean);
+                const folderPath = pathSegments.join("/"); // Keeps full path
+    
+                let fileName = "";
+                while (!fileName) {
+                    const input = prompt("Enter new file name:");
+    
+                    if (!input) return; // If canceled, exit
+    
+                    // Convert to lowercase and replace spaces with dashes
+                    fileName = input.toLowerCase().trim().replace(/\s+/g, "-");
+    
+                    // Validate against pattern
+                    if (!/^[a-z0-9-]+$/.test(fileName)) {
+                        alert("Invalid filename! Use only lowercase letters, numbers, and dashes.");
+                        fileName = ""; // Reset fileName so prompt reappears
+                    }
+                }
+    
+                // Construct the Decap CMS "New" entry URL with slug
+                const cmsCollection = "handbook"; // Decap CMS collection
+                const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=${folderPath}/&slug=${fileName}`;
+    
+                // Redirect user to Decap CMS editor for the new file in the correct folder
+                window.location.href = newFileURL;
+            });
+        }
+    });
+
+    </script>
+    
+    <div class="hx-flex hx-items-end hx-gap-4">
+      <!-- New Button -->
+      <a href="#" id="newButton" class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hx-w-6 hx-h-6 hx-mb-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span class="hx-text-sm">New</span>
       </a>
-    {{- end }}
+  
+      <!-- Edit Button -->
+      {{- with .File }}
+      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s%s" (.Dir | urlize) (.BaseFileName | urlize) }}
+      <a href="/admin/?redirect_to={{ $editURL }}" id="editButton" class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hx-w-6 hx-h-6 hx-mb-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          <span class="hx-text-sm">Edit</span>
+      </a>
+      {{- end }}
+  </div>
 
     {{- range .Site.Menus.main -}}
       {{- if not (eq .Params.type "search") -}}
