@@ -40,39 +40,39 @@
         const newButton = document.getElementById("newButton");
     
         if (newButton) {
-            newButton.addEventListener("click", (event) => {
-                event.preventDefault();
+          newButton.addEventListener("click", (event) => {
+            event.preventDefault();
     
-                // Get the current folder path from the URL
-                const pathSegments = window.location.pathname.split("/").filter(Boolean);
-                const folderPath = pathSegments.join("/"); // Keeps full path
+            // Get the current URL path segments
+            const pathSegments = window.location.pathname.split("/").filter(Boolean);
+            // Remove the last segment to target the parent folder if more than one segment exists
+            const folderPath = pathSegments.length > 1 ? pathSegments.slice(0, -1).join("/") : pathSegments.join("/");
     
-                let fileName = "";
-                while (!fileName) {
-                    const input = prompt("Enter new file name:");
+            let fileName = "";
+            while (!fileName) {
+              const input = prompt("Enter new file name:");
     
-                    if (!input) return; // If canceled, exit
+              if (!input) return; // If canceled, exit
     
-                    // Convert to lowercase and replace spaces with dashes
-                    fileName = input.toLowerCase().trim().replace(/\s+/g, "-");
+              // Convert to lowercase and replace spaces with dashes
+              fileName = input.toLowerCase().trim().replace(/\s+/g, "-");
     
-                    // Validate against pattern
-                    if (!/^[a-z0-9-]+$/.test(fileName)) {
-                        alert("Invalid filename! Use only lowercase letters, numbers, and dashes.");
-                        fileName = ""; // Reset fileName so prompt reappears
-                    }
-                }
+              // Validate filename pattern
+              if (!/^[a-z0-9-]+$/.test(fileName)) {
+                alert("Invalid filename! Use only lowercase letters, numbers, and dashes.");
+                fileName = ""; // Reset fileName so prompt reappears
+              }
+            }
     
-                // Construct the Decap CMS "New" entry URL with slug
-                const cmsCollection = "handbook"; // Decap CMS collection
-                const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=${folderPath}/&slug=${fileName}`;
+            // Construct Decap CMS URL to ensure slug is used as filename
+            const cmsCollection = "handbook"; // Decap CMS collection
+            const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=${folderPath}&slug=${fileName}&filename=${fileName}.md`;
     
-                // Redirect user to Decap CMS editor for the new file in the correct folder
-                window.location.href = newFileURL;
-            });
+            // Redirect user to Decap CMS editor for the new file in the correct folder
+            window.location.href = newFileURL;
+          });
         }
-    });
-
+      });
     </script>
     
     <div class="hx-flex hx-items-end hx-gap-4">
