@@ -86,11 +86,16 @@
     
       <!-- Edit Button -->
       {{- with .Page }}
+      {{- /* Get the live page path without leading/trailing slashes */ -}}
       {{- $pagePath := trim .RelPermalink "/" -}}
-      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s" $pagePath -}}
+      {{- /* Prepend the repository folder structure; in your repo files are under "website/content" */ -}}
+      {{- $fullPath := printf "website/content/%s" $pagePath -}}
+      {{- /* Build the default edit URL */ -}}
+      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s" $fullPath -}}
+      {{- /* If the file is a section index, append "/_index" */ -}}
       {{- if .File }}
         {{- if eq (.File.BaseFileName | lower) "_index" -}}
-          {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index" $pagePath -}}
+          {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index" $fullPath -}}
         {{- end -}}
       {{- end -}}
       <a href="{{ $editURL }}" id="editButton" class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700" aria-label="Edit Document">
