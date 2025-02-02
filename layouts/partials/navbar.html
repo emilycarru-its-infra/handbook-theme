@@ -86,15 +86,12 @@
     
       <!-- Edit Button -->
       {{- with .Page }}
-      {{- /* Remove leading/trailing slashes from the relative permalink */ -}}
       {{- $pagePath := trim .RelPermalink "/" -}}
-      {{- $editURL := "" -}}
-      {{- if eq (.File.BaseFileName | lower) "_index" -}}
-        {{- /* For section index pages, append /_index to the path */ -}}
-        {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index" $pagePath -}}
-      {{- else -}}
-        {{- /* For regular pages, simply use the page path */ -}}
-        {{- $editURL = printf "/admin/#/collections/handbook/entries/%s" $pagePath -}}
+      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s" $pagePath -}}
+      {{- if .File }}
+        {{- if eq (.File.BaseFileName | lower) "_index" -}}
+          {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index" $pagePath -}}
+        {{- end -}}
       {{- end -}}
       <a href="{{ $editURL }}" id="editButton" class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700" aria-label="Edit Document">
         <div style="transform: scale(1.02); transform-origin: bottom center; position: relative; top: 1px;">
