@@ -89,7 +89,7 @@
       {{- /* Get the live page path without leading/trailing slashes */ -}}
       {{- $pagePath := trim .RelPermalink "/" -}}
       {{- /* Prepend the repository folder structure; in your repo files are under "website/content" */ -}}
-      {{- $fullPath := printf "website/content/%s" $pagePath -}}
+      {{- $fullPath := $pagePath -}}
       {{- /* Build the default edit URL */ -}}
       {{- $editURL := printf "/admin/#/collections/handbook/entries/%s" $fullPath -}}
       {{- /* If the file is a section index, append "/_index" */ -}}
