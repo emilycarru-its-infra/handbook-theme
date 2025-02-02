@@ -38,58 +38,50 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const newButton = document.getElementById("newButton");
-      
+    
         if (newButton) {
           newButton.addEventListener("click", (event) => {
             event.preventDefault();
-      
-            // 1) Get the URL path segments
-            //    e.g. "/website/infra/systems/directory/entra/"
-            //    => ["website", "infra", "systems", "directory", "entra"]
-            let pathSegments = window.location.pathname
-              .split("/")
-              .filter(Boolean); // remove empty
-      
-            // If the user is at /website/content/infra, "pathSegments" might be
-            // ["website","content","infra"] already. We do NOT want to end up with:
-            //   website/content/website/content/infra
-            // So, remove any leading "website" or "content"
-            while (pathSegments.length > 0 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
+    
+            // 1) Get current path segments from the window location, e.g. "/infra/systems/foo"
+            let pathSegments = window.location.pathname.split("/").filter(Boolean);
+    
+            // 2) Remove any leading "website" or "content" to avoid duplication
+            //    e.g. ["website","content","infra","systems"] -> ["infra","systems"]
+            while (pathSegments.length >= 1 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
               pathSegments.shift();
             }
-      
-            // 2) We might remove the last segment if we want the parent folder
-            //    If you want the new file in the EXACT folder, skip this. 
-            //    If you want "new file in the parent folder," do:
-            // if (pathSegments.length > 1) {
-            //   pathSegments.pop();
-            // }
-      
-            // Now pathSegments is e.g. ["infra","systems","directory","entra"]
-            // We'll force the top-level prefix "website/content/"
-            const folderPath = pathSegments.join("/"); // e.g. "infra/systems/directory/entra"
-      
-            // 3) Prompt user for new filename
+    
+            // 3) We'll keep all remaining segments as is. 
+            //    If you wanted to go "parent" folder, you could pop() once. 
+            //    But typically for a "New file" in the current folder, we do not pop.
+    
+            // 4) Prompt user for new filename
             let fileName = "";
             while (!fileName) {
-              const input = prompt("Enter new file name:");
+              const input = prompt("Enter new file name (lowercase, no spaces):");
               if (!input) return; // user cancelled
-              fileName = input
-                .toLowerCase()
-                .trim()
-                .replace(/\s+/g, "-");
-      
+              fileName = input.toLowerCase().trim().replace(/\s+/g, "-");
+    
               if (!/^[a-z0-9-]+$/.test(fileName)) {
                 alert("Invalid filename! Use only lowercase letters, numbers, and dashes.");
                 fileName = "";
               }
             }
-      
-            // 4) Build the final Decap CMS URL
-            // e.g. /admin/#/collections/handbook/new?path=website/content/infra/systems&slug=example&filename=example.md
+    
+            // 5) Re-insert a *single* "website/content" prefix at the start
+            // e.g. now pathSegments = ["infra","systems"], we do => ["website","content","infra","systems"]
+            pathSegments.unshift("content");
+            pathSegments.unshift("website");
+    
+            // 6) Join them
+            const folderPath = pathSegments.join("/"); // e.g. "website/content/infra/systems"
+    
+            // 7) Build final Decap CMS URL for the new file
+            // e.g. /admin/#/collections/handbook/new?path=website/content/infra/systems&slug=my-file&filename=my-file.md
             const cmsCollection = "handbook";
-            const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=website/content/${folderPath}&slug=${fileName}&filename=${fileName}.md`;
-      
+            const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=${folderPath}&slug=${fileName}&filename=${fileName}.md`;
+    
             console.log("Creating new file at:", newFileURL);
             window.location.href = newFileURL;
           });
