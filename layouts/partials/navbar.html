@@ -38,37 +38,59 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const newButton = document.getElementById("newButton");
-    
+      
         if (newButton) {
           newButton.addEventListener("click", (event) => {
             event.preventDefault();
-    
-            // Get the current URL path segments
-            const pathSegments = window.location.pathname.split("/").filter(Boolean);
-            // Remove the last segment to target the parent folder if more than one segment exists
-            const folderPath = pathSegments.length > 1 ? pathSegments.slice(0, -1).join("/") : pathSegments.join("/");
-    
+      
+            // 1) Get the URL path segments
+            //    e.g. "/website/infra/systems/directory/entra/"
+            //    => ["website", "infra", "systems", "directory", "entra"]
+            let pathSegments = window.location.pathname
+              .split("/")
+              .filter(Boolean); // remove empty
+      
+            // If the user is at /website/content/infra, "pathSegments" might be
+            // ["website","content","infra"] already. We do NOT want to end up with:
+            //   website/content/website/content/infra
+            // So, remove any leading "website" or "content"
+            while (pathSegments.length > 0 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
+              pathSegments.shift();
+            }
+      
+            // 2) We might remove the last segment if we want the parent folder
+            //    If you want the new file in the EXACT folder, skip this. 
+            //    If you want "new file in the parent folder," do:
+            // if (pathSegments.length > 1) {
+            //   pathSegments.pop();
+            // }
+      
+            // Now pathSegments is e.g. ["infra","systems","directory","entra"]
+            // We'll force the top-level prefix "website/content/"
+            const folderPath = pathSegments.join("/"); // e.g. "infra/systems/directory/entra"
+      
+            // 3) Prompt user for new filename
             let fileName = "";
             while (!fileName) {
               const input = prompt("Enter new file name:");
-    
-              if (!input) return; // If canceled, exit
-    
-              // Convert to lowercase and replace spaces with dashes
-              fileName = input.toLowerCase().trim().replace(/\s+/g, "-");
-    
-              // Validate filename pattern
+              if (!input) return; // user cancelled
+              fileName = input
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-");
+      
               if (!/^[a-z0-9-]+$/.test(fileName)) {
                 alert("Invalid filename! Use only lowercase letters, numbers, and dashes.");
-                fileName = ""; // Reset fileName so prompt reappears
+                fileName = "";
               }
             }
-    
-            const cmsCollection = "handbook"; // Decap CMS collection
-            // Prepend "website/" to the folderPath to force the top-level folder inclusion.
-            const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=website/${folderPath}&slug=${fileName}&filename=${fileName}.md`;
-    
-            // Redirect user to Decap CMS editor for the new file in the correct folder
+      
+            // 4) Build the final Decap CMS URL
+            // e.g. /admin/#/collections/handbook/new?path=website/content/infra/systems&slug=example&filename=example.md
+            const cmsCollection = "handbook";
+            const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=website/content/${folderPath}&slug=${fileName}&filename=${fileName}.md`;
+      
+            console.log("Creating new file at:", newFileURL);
             window.location.href = newFileURL;
           });
         }
