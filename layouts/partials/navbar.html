@@ -61,7 +61,7 @@
             }
     
             // 4) Prompt for the Document Title (may contain spaces/capitals)
-            let docTitle = prompt("Enter Document Title (it can have spaces):");
+            let docTitle = prompt("Enter the new document title (keep it short and sweet):");
             if (!docTitle) return; // user cancelled
     
             // 5) Generate a slug from docTitle => lowercase, dashes, no spaces
@@ -77,7 +77,11 @@
             }
     
             // 6) (Optional) ask for a subfolder name
-            const maybeFolder = prompt("Enter an optional subfolder (or leave blank):");
+            const maybeFolder = prompt(
+                "Do you want to save this new document to a new subfolder?\n" +
+                "If so, what is the name for the subfolder?\n\n" +
+                "Leave it blank to only create your new document."
+              );
             if (maybeFolder) {
               const cleanFolder = maybeFolder
                 .toLowerCase()
@@ -91,6 +95,11 @@
     
             // 7) Final folder path, e.g. "infra/devices/provisioning/macintosh/subfolder"
             const folderPath = pathSegments.join("/");
+
+            // Changed confirmation prompt: show folderPath on a new line and ask "Proceed?" on a 3rd line
+            if (!confirm("Your new document will be created in section:\n\n" + "/" + folderPath + "\n\nIf this doesn't look right, cancel and run it again.")) {
+              return;
+            }
     
             // 8) Build Decap CMS “new” URL. We pass:
             //    - path=folderPath
