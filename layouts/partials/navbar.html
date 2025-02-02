@@ -43,20 +43,29 @@
           newButton.addEventListener("click", (event) => {
             event.preventDefault();
     
-            // 1) Get current path segments from the window location, e.g. "/infra/systems/foo"
+            // 1) Split the current path, e.g. "/infra/devices/provisioning/macintosh/school-manager"
             let pathSegments = window.location.pathname.split("/").filter(Boolean);
+            // => ["infra","devices","provisioning","macintosh","school-manager"]
     
-            // 2) Remove any leading "website" or "content" to avoid duplication
-            //    e.g. ["website","content","infra","systems"] -> ["infra","systems"]
-            while (pathSegments.length >= 1 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
+            // 2) Remove any leading "website" or "content" segments
+            //    so we won't ever get "website/content/website/content"
+            while (
+              pathSegments.length >= 1 &&
+              (pathSegments[0] === "website" || pathSegments[0] === "content")
+            ) {
               pathSegments.shift();
             }
+            // Now if it was ["website","content","infra","devices"], it becomes ["infra","devices"]
     
-            // 3) We'll keep all remaining segments as is. 
-            //    If you wanted to go "parent" folder, you could pop() once. 
-            //    But typically for a "New file" in the current folder, we do not pop.
+            // 3) If we're viewing a single doc like "school-manager" (not a folder),
+            //    pop the last segment so the new file is created in the *parent* folder
+            if (pathSegments.length > 0) {
+              // e.g. "school-manager" might be the doc name
+              // If you'd prefer new docs go in *exactly* the same path, remove this pop().
+              pathSegments.pop();
+            }
     
-            // 4) Prompt user for new filename
+            // 4) Prompt user for the new file's “slug” (filename)
             let fileName = "";
             while (!fileName) {
               const input = prompt("Enter new file name (lowercase, no spaces):");
@@ -69,16 +78,12 @@
               }
             }
     
-            // 5) Re-insert a *single* "website/content" prefix at the start
-            // e.g. now pathSegments = ["infra","systems"], we do => ["website","content","infra","systems"]
-            pathSegments.unshift("content");
-            pathSegments.unshift("website");
+            // 5) Join whatever remains. e.g. ["infra","devices","provisioning","macintosh"] => "infra/devices/provisioning/macintosh"
+            const folderPath = pathSegments.join("/");
     
-            // 6) Join them
-            const folderPath = pathSegments.join("/"); // e.g. "website/content/infra/systems"
-    
-            // 7) Build final Decap CMS URL for the new file
-            // e.g. /admin/#/collections/handbook/new?path=website/content/infra/systems&slug=my-file&filename=my-file.md
+            // 6) Build the Decap CMS “new” URL.
+            //    We do NOT prepend "website/content"—Decap will handle that from the “folder: website/content” config.
+            //    So final param => "?path=infra/devices/provisioning/macintosh"
             const cmsCollection = "handbook";
             const newFileURL = `/admin/#/collections/${cmsCollection}/new?path=${folderPath}&slug=${fileName}&filename=${fileName}.md`;
     
