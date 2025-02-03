@@ -46,37 +46,32 @@
             // 1) Split the current path, e.g. "/infra/devices/provisioning/macintosh/school-manager"
             let pathSegments = window.location.pathname.split("/").filter(Boolean);
     
-            // 2) Remove any leading "website" or "content" segments so we never get duplication
-            while (
-              pathSegments.length > 0 &&
-              (pathSegments[0] === "website" || pathSegments[0] === "content")
-            ) {
+            // 2) Remove any leading "website" or "content" segments to avoid duplication
+            while (pathSegments.length > 0 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
               pathSegments.shift();
             }
     
-            // 3) If on a doc like "school-manager", pop that last segment
-            //    so the new file is created in the *parent* folder
+            // 3) If on a doc like "school-manager", pop that last segment so the new file is created in the parent folder
             if (pathSegments.length > 0) {
               pathSegments.pop();
             }
     
-            // 4) Prompt for the Document Title (may contain spaces/capitals)
+            // 4) Prompt for the Document Title (allows spaces and capitals)
             let docTitle = prompt("Enter the new document title (keep it short and sweet):");
             if (!docTitle) return; // user cancelled
     
-            // 5) Generate a slug from docTitle => lowercase, dashes, no spaces
+            // 5) Generate a slug from the Document Title: lowercase, dashes, no spaces or non-alphanumerics
             let slug = docTitle
               .toLowerCase()
               .trim()
               .replace(/\s+/g, "-")
-              .replace(/[^a-z0-9-]/g, ""); // optional extra cleaning if you want letters/digits only
-    
+              .replace(/[^a-z0-9-]/g, "");
             if (!slug) {
               alert("Could not derive a valid slug from that title. Try again.");
               return;
             }
     
-            // 6) (Optional) ask for a subfolder name
+            // 6) (Optional) Ask for a subfolder name
             const maybeFolder = prompt(
                 "Do you want to save this new document to a new subfolder?\n" +
                 "If so, what is the name for the subfolder?\n\n" +
@@ -95,24 +90,17 @@
     
             // 7) Final folder path, e.g. "infra/devices/provisioning/macintosh/subfolder"
             const folderPath = pathSegments.join("/");
-
-            // Changed confirmation prompt: show folderPath on a new line and ask "Proceed?" on a 3rd line
-            if (!confirm("Your new document will be created in section:\n\n" + "/" + folderPath + "\n\nIf this doesn't look right, cancel and run it again.")) {
-              return;
-            }
     
-            // 8) Build Decap CMS “new” URL. We pass:
-            //    - path=folderPath
-            //    - slug=slug
-            //    - filename=slug.md
-            //    - fields[title] = original docTitle
-            //
-            // Many recent Decap versions fill the "title" field automatically if you pass fields[title].
+            // 8) Get the current page's URL as the referrer (encoded)
+            const referrer = encodeURIComponent(window.location.href);
+    
+            // 9) Build Decap CMS “new” URL.
+            // Note: Do NOT prepend "website/content" because your CMS config (folder: "website/content") will do that.
+            // Also, we pass the document title into fields[title] so the editor is pre-populated.
             const collectionName = "handbook";
             const encodedTitle = encodeURIComponent(docTitle);
-            const newFileURL = 
-              `/admin/#/collections/${collectionName}/new?` +
-              `path=${folderPath}&slug=${slug}&filename=${slug}.md&fields[title]=${encodedTitle}`;
+            const newFileURL = `/admin/#/collections/${collectionName}/new?` +
+              `path=${folderPath}&slug=${slug}&filename=${slug}.md&referrer=${referrer}&fields[title]=${encodedTitle}`;
     
             console.log("Creating new file at:", newFileURL);
             window.location.href = newFileURL;
@@ -134,14 +122,15 @@
       {{- with .Page }}
       {{- /* Get the live page path without leading/trailing slashes */ -}}
       {{- $pagePath := trim .RelPermalink "/" -}}
-      {{- /* Prepend the repository folder structure; in your repo files are under "website/content" */ -}}
       {{- $fullPath := $pagePath -}}
-      {{- /* Build the default edit URL */ -}}
-      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s" $fullPath -}}
+      {{- /* Encode the current page’s URL as the referrer */ -}}
+      {{- $referrer := .Permalink | urlquery -}}
+      {{- /* Build the default edit URL with the referrer parameter */ -}}
+      {{- $editURL := printf "/admin/#/collections/handbook/entries/%s?referrer=%s" $fullPath $referrer -}}
       {{- /* If the file is a section index, append "/_index" */ -}}
       {{- if .File }}
         {{- if eq (.File.BaseFileName | lower) "_index" -}}
-          {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index" $fullPath -}}
+          {{- $editURL = printf "/admin/#/collections/handbook/entries/%s/_index?referrer=%s" $fullPath $referrer -}}
         {{- end -}}
       {{- end -}}
       <a href="{{ $editURL }}" id="editButton" class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700" aria-label="Edit Document">
