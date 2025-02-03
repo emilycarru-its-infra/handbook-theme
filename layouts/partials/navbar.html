@@ -43,71 +43,78 @@
           newButton.addEventListener("click", (event) => {
             event.preventDefault();
     
-            // 1) Get the current URL's path segments.
-            // For example, if you're at "/infra/devices/provisioning/macintosh/school-manager",
-            // splitting gives: ["infra", "devices", "provisioning", "macintosh", "school-manager"]
+            // 1) Split the current path, e.g. "/infra/devices/provisioning/macintosh/school-manager"
             let pathSegments = window.location.pathname.split("/").filter(Boolean);
-            console.log("Original path segments:", pathSegments);
     
-            // 2) Remove any leading "website" or "content" so we never double them.
-            while (pathSegments.length > 0 && (pathSegments[0] === "website" || pathSegments[0] === "content")) {
+            // 2) Remove any leading "website" or "content" segments so we never get duplication
+            while (
+              pathSegments.length > 0 &&
+              (pathSegments[0] === "website" || pathSegments[0] === "content")
+            ) {
               pathSegments.shift();
             }
-            console.log("After stripping leading segments:", pathSegments);
     
-            // 3) Since you’re viewing a document (not a folder index), remove the last segment.
+            // 3) If on a doc like "school-manager", pop that last segment
+            //    so the new file is created in the *parent* folder
             if (pathSegments.length > 0) {
-              const removed = pathSegments.pop();
-              console.log("Popped last segment (assumed document):", removed);
+              pathSegments.pop();
             }
-            console.log("Path segments for folder creation:", pathSegments);
     
-            // 4) (Optional) Prompt for a subfolder name. If provided, sanitize and add it.
-            let subfolder = prompt("Enter an optional subfolder name (leave blank for none):");
-            if (subfolder) {
-              subfolder = subfolder.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-              if (subfolder) {
-                pathSegments.push(subfolder);
-              }
-            }
-            console.log("After optional subfolder:", pathSegments);
+            // 4) Prompt for the Document Title (may contain spaces/capitals)
+            let docTitle = prompt("Enter the new document title (keep it short and sweet):");
+            if (!docTitle) return; // user cancelled
     
-            // 5) Join segments to get the relative folder path.
-            // e.g., "infra/devices/provisioning/macintosh" or with subfolder "infra/devices/provisioning/macintosh/subfolder"
-            const folderPath = pathSegments.join("/");
-            console.log("Final folderPath:", folderPath);
+            // 5) Generate a slug from docTitle => lowercase, dashes, no spaces
+            let slug = docTitle
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "-")
+              .replace(/[^a-z0-9-]/g, ""); // optional extra cleaning if you want letters/digits only
     
-            // 6) Prompt for the Document Title (can contain spaces & capitals).
-            let docTitle = prompt("Enter the new document title (can contain spaces):");
-            if (!docTitle) return; // User cancelled
-    
-            // 7) Generate a slug from the Document Title: lowercase, dashes instead of spaces, remove non-alphanumerics.
-            let slug = docTitle.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
             if (!slug) {
               alert("Could not derive a valid slug from that title. Try again.");
               return;
             }
-            console.log("Generated slug:", slug);
     
-            // 8) Capture the current page's URL as the referrer.
-            const referrer = encodeURIComponent(window.location.href);
-            console.log("Referrer:", referrer);
+            // 6) (Optional) ask for a subfolder name
+            const maybeFolder = prompt(
+                "Do you want to save this new document to a new subfolder?\n" +
+                "If so, what is the name for the subfolder?\n\n" +
+                "Leave it blank to only create your new document."
+              );
+            if (maybeFolder) {
+              const cleanFolder = maybeFolder
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-")
+                .replace(/[^a-z0-9-]/g, "");
+              if (cleanFolder) {
+                pathSegments.push(cleanFolder);
+              }
+            }
     
-            // 9) Build the final Decap CMS "new" URL.
-            // Do NOT prepend "website/content" because your CMS config already specifies that folder.
-            // We pass:
-            //   - path = folderPath (e.g., "infra/devices/provisioning/macintosh")
-            //   - slug = generated slug
-            //   - filename = slug + ".md"
-            //   - referrer = current URL
-            //   - fields[title] = original docTitle (encoded)
+            // 7) Final folder path, e.g. "infra/devices/provisioning/macintosh/subfolder"
+            const folderPath = pathSegments.join("/");
+
+            // Changed confirmation prompt: show folderPath on a new line and ask "Proceed?" on a 3rd line
+            if (!confirm("Your new document will be created in section:\n\n" + "/" + folderPath + "\n\nIf this doesn't look right, cancel and run it again.")) {
+              return;
+            }
+    
+            // 8) Build Decap CMS “new” URL. We pass:
+            //    - path=folderPath
+            //    - slug=slug
+            //    - filename=slug.md
+            //    - fields[title] = original docTitle
+            //
+            // Many recent Decap versions fill the "title" field automatically if you pass fields[title].
             const collectionName = "handbook";
             const encodedTitle = encodeURIComponent(docTitle);
-            const newFileURL = `/admin/#/collections/${collectionName}/new?` +
-              `path=${folderPath}&slug=${slug}&filename=${slug}.md&referrer=${referrer}&fields[title]=${encodedTitle}`;
-            console.log("Final new file URL:", newFileURL);
+            const newFileURL = 
+              `/admin/#/collections/${collectionName}/new?` +
+              `path=${folderPath}&slug=${slug}&filename=${slug}.md&fields[title]=${encodedTitle}`;
     
-            // 10) Redirect the browser to the new file creation URL.
+            console.log("Creating new file at:", newFileURL);
             window.location.href = newFileURL;
           });
         }
