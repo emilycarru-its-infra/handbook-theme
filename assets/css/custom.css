@@ -13,3 +13,8 @@
     max-width: 330px;
     margin-right: 10px;
 }
+
+.content :where(img):not(:where([class~=not-prose], [class~=not-prose] *)) {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
