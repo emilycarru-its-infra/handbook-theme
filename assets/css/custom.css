@@ -1,4 +1,15 @@
 .hextra-feature-card {
-  margin-top: 35px; /* Adds space above the card */
-  margin-bottom: 20px; /* Adds space below the card */
+  margin-top: 35px;
+  margin-bottom: 20px;
+}
+
+.sidebar-container {
+    width: 22rem;
+    max-width: 330px;
+}
+
+.hextra-toc {
+    width: 22rem;
+    max-width: 330px;
+    margin-right: 10px;
 }
