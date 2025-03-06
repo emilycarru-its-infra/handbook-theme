@@ -1,0 +1,77 @@
+{{ define "main" }}
+  <div class='hx-mx-auto hx-flex {{ partial "utils/page-width" . }}'>
+    {{ partial "sidebar.html" (dict "context" .) }}
+    {{ partial "toc.html" . }}
+
+    <article class="hx-w-full hx-break-words hx-flex hx-min-h-[calc(100vh-var(--navbar-height))] hx-min-w-0 hx-justify-center hx-pb-8 hx-pr-[calc(env(safe-area-inset-right)-1.5rem)]">
+      <main class="hx-w-full hx-min-w-0 hx-max-w-6xl hx-px-6 hx-pt-4 md:hx-px-12">
+        {{ partial "breadcrumb.html" . }}
+
+        <div class="content">
+          {{ with .GitInfo }}
+            <p style="text-align: right; font-size: 0.8em;">
+              Last modified on {{ .AuthorDate | dateFormat "Jan 2, 2006" }} by {{ .AuthorName }}
+            </p>
+          {{ else }}
+            <p style="text-align: right; font-size: 0.8em;">
+              {{ with .Params.lastmod_date }}Last modified on {{ . | dateFormat "Jan 2, 2006" }}{{ end }}
+              {{ with .Params.lastmod_by }} by {{ . }}{{ end }}
+            </p>
+          {{ end }}
+
+          <!-- Normal page content -->
+          {{ .Content }}
+
+          <!-- Script for copying icon names -->
+          <script>
+          function copyIconName(name) {
+            navigator.clipboard.writeText(name)
+              .then(() => {
+                console.log("Copied icon name:", name);
+              })
+              .catch(err => {
+                console.error("Failed to copy icon name:", err);
+              });
+          }
+          </script>
+
+          <!-- BEGIN: ICON GALLERY CODE -->
+          {{ $groups := dict }}
+          {{ range $name, $svg := .Site.Data.icons_gallery }}
+            {{ $parts := split $name "-" }}
+            {{ $category := index $parts 1 }} <!-- e.g. "compute", "web", etc. -->
+
+            {{ if not (index $groups $category) }}
+              {{ $groups = merge $groups (dict $category (slice)) }}
+            {{ end }}
+
+            {{ $iconList := index $groups $category }}
+            {{ $iconList = $iconList | append (dict "name" $name "svg" $svg) }}
+            {{ $groups = merge $groups (dict $category $iconList) }}
+          {{ end }}
+
+          {{ range $cat, $icons := $groups }}
+            <h3 class="icon-category-title">{{ $cat | title }}</h3>
+            <div class="icon-grid">
+              {{ range $icons }}
+                <!-- Clicking an icon copies its name to the clipboard -->
+                <div class="icon-item" onclick="copyIconName('{{ .name }}')">
+                  <div class="icon-svg">
+                    {{ .svg | safeHTML }}
+                  </div>
+                  <div class="icon-name">{{ .name }}</div>
+                </div>
+              {{ end }}
+            </div>
+          {{ end }}
+          <!-- END: ICON GALLERY CODE -->
+
+        </div>
+
+        {{ partial "components/last-updated.html" . }}
+        {{ partial "components/pager.html" . }}
+        {{ partial "components/comments.html" . }}
+      </main>
+    </article>
+  </div>
+{{ end }}

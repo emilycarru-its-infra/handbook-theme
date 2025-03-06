@@ -31,3 +31,48 @@
   margin-right: 0 !important;
   margin-bottom: 1rem;
 }
+
+.icon-category-title {
+  margin-top: 2rem;    /* extra spacing above each category heading */
+  margin-bottom: 1rem;
+}
+
+.icon-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-auto-flow: row;
+  /* Each icon is at least 80px wide, and only as wide as the content.
+     They won't expand to fill the entire row. */
+  grid-template-columns: repeat(auto-fit, minmax(80px, max-content));
+  gap: 1rem;
+  justify-content: start;  /* or center, if you prefer centered icons */
+  align-items: start;
+}
+
+.icon-svg svg {
+  width: 72px;  /* or 48px, etc. */
+  height: 72px;
+}
+
+.icon-item {
+  position: relative; /* container for absolute positioning */
+}
+
+.icon-name {
+  position: absolute;
+  left: 0; 
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent overlay */
+  color: #fff;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 2px 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none; /* so clicks pass through to the icon if you want */
+}
+
+.icon-item:hover .icon-name {
+  opacity: 1;
+}
