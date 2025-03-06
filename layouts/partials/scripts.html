@@ -39,6 +39,16 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
+      
+      // Register custom Azure icon pack
+      mermaid.registerIconPacks([
+        {
+          name: 'azure',
+          loader: () => fetch('/icons/azure.json').then(res => res.json())
+        }
+      ]);
+
+      // Initialize Mermaid with the selected theme
       mermaid.initialize({ startOnLoad: true, theme: theme });
     });
   </script>
