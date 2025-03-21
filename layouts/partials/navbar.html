@@ -40,63 +40,48 @@
       
       // We rely on a single DOMContentLoaded so we don't stack multiple listeners.
       document.addEventListener("DOMContentLoaded", () => {
-        console.log("[DIAGNOSTIC] DOMContentLoaded fired—script is running!");
-      
+        // Get reference to the "New" button
         const newButton = document.getElementById("newButton");
-        if (!newButton) {
-          console.log("[DIAGNOSTIC] #newButton not found in the DOM at runtime.");
-          return;
-        }
+        if (!newButton) return;
       
         newButton.addEventListener("click", (event) => {
           event.preventDefault();
-          console.log("[New Button] Clicked.");
       
-          // 1) Current path
+          // 1. Parse current URL to determine the path
           const originalPath = window.location.pathname;
-          console.log("[New Button] Original window.location.pathname:", originalPath);
-      
-          // 2) Break into segments
           let pathSegments = originalPath.split("/").filter(Boolean);
-          console.log("[New Button] Initial segments:", pathSegments);
       
-          // 3) Remove any "website" or "content" segments outright
-          //    (We let config handle "website/content", so we never pass them here.)
+          // 2. Remove unnecessary segments (e.g., "website", "content")
           pathSegments = pathSegments.filter(seg => seg !== "website" && seg !== "content");
-          console.log("[New Button] Stripped out 'website'/'content':", pathSegments);
       
-          // 4) Remove the final segment, so new doc goes into that parent folder
-          if (pathSegments.length > 0) {
-            console.log("[New Button] Removing last segment:", pathSegments[pathSegments.length - 1]);
-            pathSegments.pop();
-          }
-          console.log("[New Button] Final folder path so far:", pathSegments);
-      
-          // 5) Prompt for doc title
+          // 3. Prompt user for new document title
           let docTitle = prompt("Enter the new document title (keep it short and sweet):");
-          if (!docTitle) {
-            console.log("[New Button] Title prompt canceled. Aborting new doc creation.");
-            return;
-          }
+          if (!docTitle) return;  // Exit if user cancels
       
-          // 6) Make a slug from the title
+          // 4. Generate a URL-friendly slug from the title
           let slug = docTitle
             .toLowerCase()
             .trim()
             .replace(/\s+/g, "-")
             .replace(/[^a-z0-9-]/g, "");
           if (!slug) {
-            console.log("[New Button] Invalid slug (empty). Aborting.");
-            alert("Could not derive a valid slug from that title. Try again.");
+            alert("Invalid slug generated. Use letters, numbers, and spaces only.");
             return;
           }
-          console.log("[New Button] docTitle:", docTitle, "| slug:", slug);
       
-          // 7) Optional subfolder
-          let maybeFolder = prompt(
-            "Do you want this new document in a subfolder?\n" +
-            "If so, enter folder name now. Leave blank to skip."
-          );
+          // 5. Ask user if this new doc is a "section" (nested folder with `_index.md`) or a regular page
+          let isSection = confirm("Is this a new SECTION (nested folder with _index.md)?\n\nPress OK for YES, Cancel for NO.");
+      
+          // 6. Determine folder structure based on user's choice
+          let maybeFolder;
+          if (isSection) {
+            // For section pages, automatically use slug as folder name
+            maybeFolder = slug;
+          } else {
+            // For leaf pages, allow optional additional folder input
+            maybeFolder = prompt("Optional subfolder name (or leave blank):");
+          }
+      
           if (maybeFolder) {
             let cleanFolder = maybeFolder
               .toLowerCase()
@@ -104,29 +89,29 @@
               .replace(/\s+/g, "-")
               .replace(/[^a-z0-9-]/g, "");
             if (cleanFolder) {
-              console.log("[New Button] Adding subfolder:", cleanFolder);
               pathSegments.push(cleanFolder);
             }
           }
       
-          // 8) Final folder path
+          // 7. Construct final file path
           const folderPath = pathSegments.join("/");
-          console.log("[New Button] Final folderPath:", folderPath);
       
-          // 9) Confirm creation
-          if (!confirm("Your new doc will be created in:\n\n/" + folderPath + "\n\nProceed?")) {
-            console.log("[New Button] Creation canceled by user in confirm dialog.");
-            return;
+          // 8. Set correct filename depending on the document type
+          const filename = isSection ? "_index.md" : `${slug}.md`;
+      
+          // 9. Confirm file creation path with the user
+          if (!confirm(`Your new doc "${docTitle}" will be created at:\n/${folderPath}/${filename}\n\nProceed?`)) {
+            return;  // Exit if user cancels
           }
       
-          // 10) Build Decap “new” URL
-          const collectionName = "handbook"; // match your config
+          // 10. Build Decap CMS "new entry" URL
+          const collectionName = "handbook"; // ensure matches your Decap CMS collection name
           const encodedTitle = encodeURIComponent(docTitle);
           const newFileURL =
             `/admin/#/collections/${collectionName}/new?` +
-            `path=${folderPath}&slug=${slug}&filename=${slug}.md&fields[title]=${encodedTitle}`;
+            `path=${folderPath}&slug=${slug}&filename=${filename}&fields[title]=${encodedTitle}`;
       
-          console.log("[New Button] Redirecting to new doc:", newFileURL);
+          // 11. Redirect user to the new document page in Decap CMS
           window.location.href = newFileURL;
         });
       });
