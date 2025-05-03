@@ -1,0 +1,32 @@
+name: Update Mermaid
+
+on:
+  workflow_dispatch:      # → run manually from the Actions tab
+  schedule:
+    - cron: '0 07 * * 1'  # → every Monday 07:00 UTC (≈ mid-night PT)
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout site
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # keep history so the PR diff is clean
+
+      # 2. Install (or upgrade) Mermaid
+      - uses: actions/setup-node@v4
+      - run: |
+          npm pkg set scripts.postinstall="exit 0"   # stop Mermaid's post-install prompt
+          npm install --save-dev mermaid@latest
+          cp node_modules/mermaid/dist/mermaid.min.js assets/lib/mermaid/
+
+      # 3. Create pull request if anything changed
+      - uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: bump Mermaid"
+          title: "chore: bump Mermaid to latest"
+          body: "Automated update of mermaid.min.js → assets/lib/mermaid"
+          branch: ci/bump-mermaid
+          delete-branch: true
