@@ -1,20 +1,45 @@
 {
-  "name": "Hextra",
-  "short_name": "Hextra",
-  "start_url": "index.html",
+  "short_name": "Handbook",
+  "name": "Handbook Progressive Web App",
   "icons": [
     {
-      "src": "android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "/content/static/images/pwa-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
     },
     {
-      "src": "android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/content/static/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/content/static/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/content/static/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    },
+    {
+      "src": "/content/static/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "/content/static/favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "/content/static/favicon.ico",
+      "type": "image/x-icon",
+      "sizes": "48x48"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "display": "standalone"
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
 }
