@@ -13,7 +13,6 @@
 {{- end -}}
 <script defer src="{{ $scripts.RelPermalink }}" integrity="{{ $scripts.Data.Integrity }}"></script>
 
-
 {{/* Search */}}
 {{- if (site.Params.search.enable | default true) -}}
   {{- $searchType := site.Params.search.type | default "flexsearch" -}}
@@ -29,29 +28,6 @@
   {{- else -}}
     {{- warnf `search type "%s" is not supported` $searchType -}}
   {{- end -}}
-{{- end -}}
-
-{{/* Mermaid */}}
-{{/* FIXME: need to investigate .Page.Store hasMermaid is set for homepage */}}
-{{- if and (.Page.Store.Get "hasMermaid") (not .Page.IsHome) -}}
-  {{- $mermaidJS := resources.Get "lib/mermaid/mermaid.min.js" | fingerprint -}}
-  <script defer src="{{ $mermaidJS.RelPermalink }}" integrity="{{ $mermaidJS.Data.Integrity }}"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
-      
-      // Register custom Azure icon pack
-      mermaid.registerIconPacks([
-        {
-          name: 'azure',
-          loader: () => fetch('/icons/azure.json').then(res => res.json())
-        }
-      ]);
-
-      // Initialize Mermaid with the selected theme
-      mermaid.initialize({ startOnLoad: true, theme: theme });
-    });
-  </script>
 {{- end -}}
 
 {{/* KaTex */}}
@@ -83,3 +59,26 @@
     });
   </script>
 {{ end }}
+
+{{/* ───────── Mermaid (UMD) + Azure icons — single source of truth ───────── */}}
+{{- if and (.Page.Store.Get "hasMermaid") (not .Page.IsHome) -}}
+  <!-- 100 kB UMD bundle that already contains the icon engine -->
+  <script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+  <!-- one tiny loader that registers your local icon pack -->
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      mermaid.registerIconPacks([
+        {
+          name: 'azure',
+          loader: () => fetch('/icons/azure.json').then(r => r.json())   // 200 OK? good.
+        }
+      ]);
+
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'neutral'   // your default palette
+      });
+    });
+  </script>
+{{- end -}}
