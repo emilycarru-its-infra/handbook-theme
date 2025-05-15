@@ -110,21 +110,24 @@
 
       <!-- Edit Button -->
       {{- with .Page }}
-        {{- /* DevOps edit URL builder */ -}}
-        {{- $devOpsBase := "https://dev.azure.com/emilycarru-its-infra/Systems/_git/Handbook" -}}
-        {{- $filePath   := printf "/website/content/%s" .File.Path -}}
-        {{- $editURL    := printf "%s?path=%s&version=GBmain" $devOpsBase $filePath | urlquery -}}
-        <a href="{{ $editURL }}" id="editButton"
-           class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700"
-           aria-label="Edit Document">
-          <div style="transform: scale(1.02); transform-origin: bottom center; position: relative; top: 1px;">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hx-w-6 hx-h-6 hx-mb-1">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-            <span class="hx-text-sm">Edit</span>
-          </div>
-        </a>
+        {{- if .File }}
+          {{- /* DevOps edit URL builder */ -}}
+          {{- $devOpsBase := "https://dev.azure.com/emilycarru-its-infra/Systems/_git/Handbook" -}}
+          {{- $filePath   := printf "/website/content/%s" .File.Path -}}
+          {{- $editURL    := printf "%s?path=%s&version=GBmain" $devOpsBase $filePath | urlquery -}}
+          <a href="{{ $editURL }}" id="editButton"
+             class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700"
+             aria-label="Edit Document">
+            <div style="transform: scale(1.02); transform-origin: bottom center; position: relative; top: 1px;">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="hx-w-6 hx-h-6 hx-mb-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+              </svg>
+              <span class="hx-text-sm">Edit</span>
+            </div>
+          </a>
+        {{- end }}
       {{- end }}
+
     </div>
 
     {{- range .Site.Menus.main -}}
