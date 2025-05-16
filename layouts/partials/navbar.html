@@ -97,7 +97,7 @@
           {{/* Azure DevOps edit URL */}}
           {{- $devOpsBase  := "https://dev.azure.com/emilycarru-its-infra/Systems/_git/Handbook" -}}
           {{- $encodedPath := printf "/website/content/%s" .File.Path | urlquery -}}
-          {{- $editURL     := printf "%s?path=%s&version=GBmain&_a=edit" $devOpsBase $encodedPath | safeURL -}}
+          {{- $editURL     := printf "%s?path=%s&version=GBmain&_a=preview" $devOpsBase $encodedPath | safeURL -}}
           <a href="{{ $editURL }}" target="_blank" rel="noopener"
              id="editButton"
              class="hx-flex hx-flex-col hx-items-center hx-justify-end hx-text-sm hx-font-medium contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-px-2 hx-py-1 hx-rounded hover:hx-bg-gray-200 dark:hover:hx-bg-gray-700">
