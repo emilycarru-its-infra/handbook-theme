@@ -36,7 +36,7 @@
     {{- end -}}
 
     <script>
-      /* Azure DevOps repo root */
+      // Azure DevOps repo root
       const devOpsBase =
         "https://dev.azure.com/emilycarru-its-infra/Systems/_git/Handbook";
 
@@ -47,30 +47,23 @@
         btn.addEventListener("click", e => {
           e.preventDefault();
 
-          /* parent folder of the current page */
+          // parent folder of the current page
           const segs = window.location.pathname.split("/").filter(Boolean);
-          if (!segs.length) return alert("No target folder found.");
-          segs.pop();                      // remove the page itself
-          const folderPath = segs.join("/");
+          if (!segs.length) {
+            alert("No target folder found.");
+            return;
+          }
+          segs.pop(); // remove the page itself
+          const folderPath = segs.join("/"); // e.g. infra/devices/...
 
-          /* hand the user a default slug */
-          const title = prompt("New file title:");
-          if (!title) return;
-          const slug = title
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^a-z0-9-]/g, "");
-
-          /* encode ONLY the folder path – must end with “/” */
+          // send the user straight to that folder in DevOps
           const encodedFolder = encodeURIComponent(
             `/website/content/${folderPath}/`
           );
 
-          /* jump into DevOps “add file” UI – user pastes slug.md */
           window.location.href =
-            `${devOpsBase}?path=${encodedFolder}` +
-            `&version=GBmain&_a=add#${slug}.md`;   // hash keeps the slug handy
+            `${devOpsBase}?path=${encodedFolder}&version=GBmain`;
+          // No _a flag – DevOps shows the folder contents and its own “New → File” button.
         });
       });
     </script>
