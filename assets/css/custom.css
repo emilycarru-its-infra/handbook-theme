@@ -76,3 +76,45 @@
 .icon-item:hover .icon-name {
   opacity: 1;
 }
+
+/* ── task-list with “×” mark ────────────────────────────────── */
+
+ul li:has(> input[type="checkbox"]),
+ul li:first-child:is(input[type="checkbox"]) {
+  list-style:none;
+  display:flex;
+  align-items:center;
+  gap:.55em;
+  padding-left:0;
+}
+
+ul li:has(> input[type="checkbox"])::marker { content:""; }
+
+ul li>input[type="checkbox"]{
+  position:relative;
+  appearance:none;
+  width:.9em;
+  height:.9em;
+  margin:0;
+  flex-shrink:0;
+  pointer-events:none;
+
+  border:.12em solid currentColor;
+  border-radius:.15em;
+  background:#fff;
+}
+
+/* “×” */
+ul li>input[type="checkbox"]:checked::before,
+ul li>input[type="checkbox"]:checked::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:.6em;
+  height:.12em;
+  background:currentColor;
+  transform-origin:center;
+}
+ul li>input[type="checkbox"]:checked::before { transform:translate(-50%,-50%) rotate(45deg); }
+ul li>input[type="checkbox"]:checked::after  { transform:translate(-50%,-50%) rotate(-45deg); }
