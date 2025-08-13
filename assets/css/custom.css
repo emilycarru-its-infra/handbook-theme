@@ -118,3 +118,234 @@ ul li>input[type="checkbox"]:checked::after{
 }
 ul li>input[type="checkbox"]:checked::before { transform:translate(-50%,-50%) rotate(45deg); }
 ul li>input[type="checkbox"]:checked::after  { transform:translate(-50%,-50%) rotate(-45deg); }
+
+/* ── Mermaid Diagram Styling ────────────────────────────────── */
+
+/* Container styling for better spacing */
+pre.mermaid {
+  background: transparent !important;
+  border: none !important;
+  padding: 1rem !important;
+  margin: 1.5rem 0 !important;
+  overflow: visible !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Dark mode specific Mermaid fixes */
+.dark pre.mermaid {
+  background: rgba(31, 41, 55, 0.5) !important; /* gray-800 with opacity */
+  border-radius: 0.5rem !important;
+  border: 1px solid rgba(75, 85, 99, 0.3) !important; /* gray-600 with opacity */
+}
+
+/* Light mode container styling */
+pre.mermaid {
+  background: rgba(249, 250, 251, 0.5) !important; /* gray-50 with opacity */
+  border-radius: 0.5rem !important;
+  border: 1px solid rgba(229, 231, 235, 0.5) !important; /* gray-200 with opacity */
+}
+
+/* Force Mermaid SVG to be responsive */
+pre.mermaid svg {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+}
+
+/* Ensure text is readable in both themes */
+.dark .mermaid .node rect,
+.dark .mermaid .node circle,
+.dark .mermaid .node ellipse,
+.dark .mermaid .node polygon {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .node .label,
+.dark .mermaid .nodeLabel,
+.dark .mermaid text {
+  fill: #F9FAFB !important; /* gray-50 */
+  color: #F9FAFB !important;
+}
+
+.dark .mermaid .edgePath path,
+.dark .mermaid .flowchart-link {
+  stroke: #9CA3AF !important; /* gray-400 */
+}
+
+.dark .mermaid .arrowheadPath {
+  fill: #9CA3AF !important; /* gray-400 */
+  stroke: #9CA3AF !important;
+}
+
+/* Sequence diagram specific styling */
+.dark .mermaid .actor {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .actor text {
+  fill: #FFFFFF !important; /* white text on sequence boxes */
+}
+
+.dark .mermaid .actor-line {
+  stroke: #6B7280 !important; /* gray-500 */
+}
+
+.dark .mermaid .messageLine0,
+.dark .mermaid .messageLine1 {
+  stroke: #9CA3AF !important; /* gray-400 */
+}
+
+.dark .mermaid .messageText {
+  fill: #D1D5DB !important; /* gray-300 */
+}
+
+.dark .mermaid .note {
+  fill: #374151 !important; /* gray-700 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+/* Class diagram specific styling - darker grey boxes */
+.dark .mermaid .classBox {
+  fill: #111827 !important; /* gray-900 - darker grey */
+  stroke: #374151 !important; /* gray-700 */
+}
+
+.dark .mermaid .classTitle {
+  fill: #FFFFFF !important; /* white text */
+}
+
+.dark .mermaid .classBody {
+  fill: #FFFFFF !important; /* white text */
+}
+
+/* Flowchart specific styling */
+.dark .mermaid .cluster rect {
+  fill: rgba(31, 41, 55, 0.3) !important; /* gray-800 with opacity */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .cluster text {
+  fill: #F9FAFB !important; /* gray-50 */
+}
+
+/* Architecture diagram styling (C4 diagrams, system context, etc.) */
+.dark .mermaid .c4Person {
+  fill: #1E40AF !important; /* blue-800 */
+  stroke: #3B82F6 !important; /* blue-500 */
+}
+
+.dark .mermaid .c4PersonLabel {
+  fill: #FFFFFF !important;
+}
+
+.dark .mermaid .c4System {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .c4SystemLabel {
+  fill: #FFFFFF !important;
+}
+
+.dark .mermaid .c4Container {
+  fill: #065F46 !important; /* green-800 */
+  stroke: #10B981 !important; /* green-500 */
+}
+
+.dark .mermaid .c4ContainerLabel {
+  fill: #FFFFFF !important;
+}
+
+/* State diagram styling */
+.dark .mermaid .statediagram-state {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .statediagram-state text {
+  fill: #FFFFFF !important; /* white text */
+}
+
+.dark .mermaid .statediagram-cluster {
+  fill: rgba(31, 41, 55, 0.3) !important; /* gray-800 with opacity */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .statediagram-cluster text {
+  fill: #F9FAFB !important; /* gray-50 */
+}
+
+/* Git diagram styling */
+.dark .mermaid .commit-id,
+.dark .mermaid .commit-msg {
+  fill: #F9FAFB !important; /* gray-50 */
+}
+
+.dark .mermaid .section {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .branch-label0,
+.dark .mermaid .branch-label1,
+.dark .mermaid .branch-label2,
+.dark .mermaid .branch-label3 {
+  fill: #F9FAFB !important; /* white text */
+}
+
+/* Entity Relationship diagram styling */
+.dark .mermaid .er.entityBox {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .er.entityLabel {
+  fill: #FFFFFF !important; /* white text */
+}
+
+.dark .mermaid .er.relationshipLabel {
+  fill: #D1D5DB !important; /* gray-300 */
+}
+
+.dark .mermaid .er.relationshipLabelBox {
+  fill: #374151 !important; /* gray-700 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+/* Journey diagram styling */
+.dark .mermaid .journey-section {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .journey-section text {
+  fill: #FFFFFF !important; /* white text */
+}
+
+/* Pie chart styling */
+.dark .mermaid .pieCircle {
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .pieTitleText {
+  fill: #F9FAFB !important; /* gray-50 */
+}
+
+.dark .mermaid .slice {
+  stroke: #1F2937 !important; /* gray-800 */
+  stroke-width: 2px !important;
+}
+
+/* Requirement diagram styling */
+.dark .mermaid .req-box {
+  fill: #1F2937 !important; /* gray-800 */
+  stroke: #4B5563 !important; /* gray-600 */
+}
+
+.dark .mermaid .req-box text {
+  fill: #FFFFFF !important; /* white text */
+}
