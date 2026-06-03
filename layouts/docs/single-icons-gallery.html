@@ -37,7 +37,7 @@
 
           <!-- BEGIN: ICON GALLERY CODE -->
           {{ $groups := dict }}
-          {{ range $name, $svg := .Site.Data.icons_gallery }}
+          {{ range $name, $svg := hugo.Data.icons_gallery }}
             {{ $parts := split $name "-" }}
             {{ $category := index $parts 1 }} <!-- e.g. "compute", "web", etc. -->
 
