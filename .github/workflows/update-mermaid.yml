@@ -11,12 +11,12 @@ jobs:
 
     steps:
       # 1. Checkout site
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0   # keep history so the PR diff is clean
 
       # 2. Install (or upgrade) Mermaid
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
       - run: |
           npm pkg set scripts.postinstall="exit 0"   # stop Mermaid's post-install prompt
           npm install --save-dev mermaid@latest
